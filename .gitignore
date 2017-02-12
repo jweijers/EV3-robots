@@ -3,3 +3,8 @@ out
 .gradle
 build
 *.iml
+*.ipr
+*.iws
+.classpath
+.project
+.DS_Store
