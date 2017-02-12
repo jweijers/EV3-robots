@@ -1,7 +1,17 @@
 apply plugin: 'java'
 
+sourceCompatibility = 1.8
+
 repositories {
     mavenCentral()
+    flatDir {
+        dirs  System.getenv('EV3_HOME') + '/lib/ev3'
+    }
+}
+
+configurations {
+    sshAntTask
+    provided
 }
 
 sourceSets {
@@ -14,6 +24,22 @@ sourceSets {
             manifest {
                 attributes("Main-Class": "Hello")
             }
+        }
+    }
+}
+
+dependencies {
+    sshAntTask 'org.apache.ant:ant-jsch:1.9.4', 'jsch:jsch:0.1.29'
+    provided group: 'lejos', name: 'ev3classes', version: '1.0'
+}
+
+task deployEV3 << {
+    ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: configurations.sshAntTask.asPath)
+    ant.scp(todir: ev3_username+'@'+ev3_server+':/home/lejos/programs',
+            password: ev3_password,
+            verbose: 'true') {
+        fileset(dir: './build/libs') {
+            include(name: '**/*.jar')
         }
     }
 }
