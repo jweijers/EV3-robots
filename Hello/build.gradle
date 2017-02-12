@@ -1,12 +1,23 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.bdeneuter:mindstorms-plugin:1.2.0"
+    }
+}
+
+apply plugin: 'com.github.bdeneuter.mindstorms.ev3'
 apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs  System.getenv('EV3_HOME') + '/lib/ev3'
-    }
 }
 
 configurations {
@@ -29,17 +40,23 @@ sourceSets {
 }
 
 dependencies {
-    sshAntTask 'org.apache.ant:ant-jsch:1.9.4', 'jsch:jsch:0.1.29'
-    provided group: 'lejos', name: 'ev3classes', version: '1.0'
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile fileTree(dir: System.getenv('EV3_HOME') + '/lib/ev3', include: '*.jar')
 }
 
-task deployEV3 << {
-    ant.taskdef(name: 'scp', classname: 'org.apache.tools.ant.taskdefs.optional.ssh.Scp', classpath: configurations.sshAntTask.asPath)
-    ant.scp(todir: ev3_username+'@'+ev3_server+':/home/lejos/programs',
-            password: ev3_password,
-            verbose: 'true') {
-        fileset(dir: './build/libs') {
-            include(name: '**/*.jar')
-        }
-    }
+mindstorms {
+    // Your Java main class (the class with the method: public static void main(String ... args))
+    main = 'Hello'
+
+    // Optional: The IP address from the EV3 brick. Default value is 10.0.1.1
+    ip = '192.168.178.43'
+
+    // Optional: the user for the EV3 brick. Default value is root
+    user = 'root'
+
+    // Optional: the password for the user of the EV3 brick (Don't check in paswords in repositories! If you use a password, put it in the gradle.properties in your GRADLE_HOME and assign the variable to the password field. Default value is none
+    password = ''
+
+    // Optional: the directory on the EV3 brick where the applications will be stored. Default is /home/lejos/programs
+    home = '/home/lejos/programs'
 }
