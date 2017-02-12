@@ -1,9 +1,13 @@
-apply plugin 'java'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
 
 sourceSets {
     main {
         java {
-            srcDir 'src'
+            srcDir 'src/main/java'
         }
 
         jar {
