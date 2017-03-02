@@ -1,0 +1,64 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.bdeneuter:mindstorms-plugin:1.2.0"
+    }
+}
+
+apply plugin: 'com.github.bdeneuter.mindstorms.ev3'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    sshAntTask
+    provided
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+
+        jar {
+            manifest {
+                attributes("Main-Class": "EV3Grizzly")
+            }
+        }
+    }
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'org.glassfish.jersey.containers', name: 'jersey-container-grizzly2-http', version: '2.25.1'
+    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-moxy', version: '2.25.1'
+    compile fileTree(dir: System.getenv('EV3_HOME') + '/lib/ev3', include: '*.jar')
+}
+
+mindstorms {
+    // Your Java main class (the class with the method: public static void main(String ... args))
+    main = 'EV3Grizzly'
+
+    // Optional: The IP address from the EV3 brick. Default value is 10.0.1.1
+    ip = '10.0.1.29'
+
+    // Optional: the user for the EV3 brick. Default value is root
+    user = 'root'
+
+    // Optional: the password for the user of the EV3 brick (Don't check in paswords in repositories! If you use a password, put it in the gradle.properties in your GRADLE_HOME and assign the variable to the password field. Default value is none
+    password = ''
+
+    // Optional: the directory on the EV3 brick where the applications will be stored. Default is /home/lejos/programs
+    home = '/home/lejos/programs'
+}
