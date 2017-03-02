@@ -1,4 +1,4 @@
-# Lejos - A few Java programs for controlling a Lego EV3 robot using Java
+# Lejos - A few Java programs for controlling a Lego EV3 robot
 
 This project describes how-to get Java 8 running on an EV3 brick. 
 
