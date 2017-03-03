@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.jetty.rs;
+package eu.jeroenweijers.ev3.boot.rs;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

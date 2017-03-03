@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.jetty.rs;
+package eu.jeroenweijers.ev3.boot.rs;
 
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
