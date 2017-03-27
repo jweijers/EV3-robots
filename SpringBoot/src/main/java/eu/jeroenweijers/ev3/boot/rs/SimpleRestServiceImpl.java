@@ -9,7 +9,7 @@ public class SimpleRestServiceImpl implements SimpleRestService{
 
     @Override
     public void display(String text) {
-        LCD.drawString("Hello world", 2, 3);
+        LCD.drawString(text, 2, 3);
         Button.waitForAnyPress();
     }
 }

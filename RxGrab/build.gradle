@@ -33,7 +33,7 @@ sourceSets {
 
         jar {
             manifest {
-                attributes("Main-Class": "Hello")
+                attributes("Main-Class": "eu.jeroenweijers.ev3.rxgrab.GrabBot")
             }
         }
     }
@@ -41,12 +41,13 @@ sourceSets {
 
 dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.7'
     compile fileTree(dir: System.getenv('EV3_HOME') + '/lib/ev3', include: '*.jar')
 }
 
 mindstorms {
     // Your Java main class (the class with the method: public static void main(String ... args))
-    main = 'Hello'
+    main = 'eu.jeroenweijers.ev3.rxgrab.GrabBot'
 
     // Optional: The IP address from the EV3 brick. Default value is 10.0.1.1
     ip = '10.0.1.29'
