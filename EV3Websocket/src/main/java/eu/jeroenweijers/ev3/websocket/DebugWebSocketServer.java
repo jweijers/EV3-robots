@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.eventgrab;
+package eu.jeroenweijers.ev3.websocket;
 
 
 import fi.iki.elonen.NanoWSD;

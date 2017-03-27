@@ -33,7 +33,7 @@ sourceSets {
 
         jar {
             manifest {
-                attributes("Main-Class": "eu.jeroenweijers.ev3.eventgrab.EventGrab")
+                attributes("Main-Class": "eu.jeroenweijers.ev3.httpd.App")
             }
         }
     }
@@ -41,12 +41,13 @@ sourceSets {
 
 dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.1'
     compile fileTree(dir: System.getenv('EV3_HOME') + '/lib/ev3', include: '*.jar')
 }
 
 mindstorms {
     // Your Java main class (the class with the method: public static void main(String ... args))
-    main = 'eu.jeroenweijers.ev3.eventgrab.EventGrab'
+    main = 'eu.jeroenweijers.ev3.httpd.App'
 
     // Optional: The IP address from the EV3 brick. Default value is 10.0.1.1
     ip = '192.168.1.34'

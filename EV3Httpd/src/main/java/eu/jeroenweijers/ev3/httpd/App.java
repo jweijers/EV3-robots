@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.eventgrab;
+package eu.jeroenweijers.ev3.httpd;
 
 import fi.iki.elonen.NanoHTTPD;
 
