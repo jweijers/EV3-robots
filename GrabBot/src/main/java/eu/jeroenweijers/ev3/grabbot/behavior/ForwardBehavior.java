@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.rxgrab.behavior;
+package eu.jeroenweijers.ev3.grabbot.behavior;
 
 import eu.jeroenweijers.ev3.grabbot.GrabBot;
 import lejos.robotics.RegulatedMotor;

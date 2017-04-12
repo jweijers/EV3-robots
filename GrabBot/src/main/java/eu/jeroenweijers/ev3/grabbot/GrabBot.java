@@ -1,7 +1,7 @@
 package eu.jeroenweijers.ev3.grabbot;
 
-import eu.jeroenweijers.ev3.rxgrab.sensors.ForwardBehavior;
-import eu.jeroenweijers.ev3.rxgrab.sensors.ObstacleBehavior;
+import eu.jeroenweijers.ev3.grabbot.behavior.ObstacleBehavior;
+import eu.jeroenweijers.ev3.grabbot.behavior.ForwardBehavior;
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;

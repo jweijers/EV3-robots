@@ -17,6 +17,7 @@ apply plugin: 'idea'
 sourceCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -33,23 +34,24 @@ sourceSets {
 
         jar {
             manifest {
-                attributes("Main-Class": "eu.jeroenweijers.ev3.eventgrab.EventGrab")
+                attributes("Main-Class": "nl.ocs.ev3.canonbot.CanonBot")
             }
         }
     }
 }
 
 dependencies {
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.7.RELEASE'
+    compile group: 'nl.ocs.java', name: 'ev3-interfacing', version: '1.0.0-SNAPSHOT'
     compile fileTree(dir: System.getenv('EV3_HOME') + '/lib/ev3', include: '*.jar')
 }
 
 mindstorms {
     // Your Java main class (the class with the method: public static void main(String ... args))
-    main = 'eu.jeroenweijers.ev3.eventgrab.EventGrab'
+    main = 'nl.ocs.ev3.canonbot.CanonBot'
 
     // Optional: The IP address from the EV3 brick. Default value is 10.0.1.1
-    ip = '192.168.2.101'
+    ip = '192.168.3.2'
 
     // Optional: the user for the EV3 brick. Default value is root
     user = 'root'

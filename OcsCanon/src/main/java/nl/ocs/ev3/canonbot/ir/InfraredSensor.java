@@ -1,4 +1,4 @@
-package eu.jeroenweijers.ev3.eventgrab.sensors;
+package nl.ocs.ev3.canonbot.ir;
 
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3IRSensor;
