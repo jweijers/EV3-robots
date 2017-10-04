@@ -1,17 +1,14 @@
 package nl.ocs.lejos;
 
-import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
-import ev3dev.sensors.ev3.EV3IRSensor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.sensor.EV3IRSensor;
 import lejos.robotics.SampleProvider;
 import lejos.robotics.subsumption.Behavior;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BackOffBehavior implements Behavior {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BackOffBehavior.class);
 
     private final static int MINIMAL_DISTANCE = 40;
 
@@ -35,35 +32,37 @@ public class BackOffBehavior implements Behavior {
 
     @Override
     public boolean takeControl() {
-        LOG.debug("Checking distance");
+        System.out.println("Checking distance");
         distanceSampler.fetchSample(sample, 0);
         final int distance = (int) sample[0];
-        LOG.debug("Distance is: {}", distance);
+        System.out.println("Distance is: " + distance);
         return distance < MINIMAL_DISTANCE && !robotState.getPause().get();
     }
 
     @Override
     public void action() {
-        LOG.debug("Starting backing off");
+        System.out.println("Starting backing off");
         suppressed.set(false);
         final int speed = 200;
+        leftMotor.startSynchronization();
         leftMotor.setSpeed(speed);
         rightMotor.setSpeed(speed);
         leftMotor.forward();
-        rightMotor.forward();
+        //rightMotor.forward();
         while (!suppressed.get() && takeControl()) {
             Thread.yield();
         }
         leftMotor.stop();
-        rightMotor.stop();
+        //rightMotor.stop();
+        leftMotor.endSynchronization();
         suppressed.set(true);
 
-        LOG.debug("Done backing off");
+        System.out.println("Done backing off");
     }
 
     @Override
     public void suppress() {
-        LOG.debug("Suppressing");
+        System.out.println("Suppressing");
         suppressed.set(true);
     }
 }

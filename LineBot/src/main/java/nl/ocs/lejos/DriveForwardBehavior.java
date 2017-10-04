@@ -1,6 +1,6 @@
 package nl.ocs.lejos;
 
-import ev3dev.actuators.lego.motors.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.subsumption.Behavior;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,15 +32,17 @@ public class DriveForwardBehavior implements Behavior {
     @Override
     public void action() {
         suppressed.set(false);
-        leftMotor.setSpeed(-200);
-        rightMotor.setSpeed(-200);
-        leftMotor.forward();
-        rightMotor.forward();
+        leftMotor.startSynchronization();
+        leftMotor.setSpeed(200);
+        rightMotor.setSpeed(200);
+        leftMotor.backward();
+        rightMotor.backward();
         while (driveOn()) {
             Thread.yield();
         }
         leftMotor.stop();
         rightMotor.stop();
+        rightMotor.startSynchronization();
     }
 
     @Override
