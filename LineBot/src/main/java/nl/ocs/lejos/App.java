@@ -48,25 +48,23 @@ public class App extends EV3DevDevice {
 
     public static void main(final String[] args) {
         setupShutdownHooks();
-        final GraphicsLCD lcd = LCD.getInstance();
+        LOG.info("Starting robot");
         clearLCD();
         lcd.setFont(new Font(MONOSPACED, PLAIN, 10));
         lcd.setColor(Color.BLACK);
         lcd.drawString("Hello Lego!", 10, 10, 0);
-        sound.twoBeeps();
         lcd.refresh();
         LOG.info("Hello Lego!");
         Button.waitForAnyPress();
-        sound.beep();
         LOG.info("Setup motors.");
         leftMotor.setSpeed(-200);
         rightMotor.setSpeed(-200);
         final RobotState robotState = new RobotState();
         final Behavior[] behaviors = { new DriveForwardBehavior(robotState, leftMotor, rightMotor),
-                new BeepOnRedBehavior(colorSensor, sound, robotState),
-                new BackOffBehavior(irSensor, leftMotor, rightMotor, robotState) };
+                new FindRedBehavior(colorSensor, leftMotor, rightMotor, robotState) };//,
+        //new BackOffBehavior(irSensor, leftMotor, rightMotor, robotState) };
         final Arbitrator arbitrator = new Arbitrator(behaviors);
-        LOG.info("Launching kill thread");
+        LOG.info("Launching control thread");
         final Thread killThread = new Thread(() -> {
             Button.ESCAPE.addKeyListener(new KeyListener() {
                 @Override
