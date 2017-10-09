@@ -47,8 +47,8 @@ public class App extends EV3DevDevice {
     private static final Logger LOG = LoggerFactory.getLogger(App.class);
 
     public static void main(final String[] args) {
-        setupShutdownHooks();
         LOG.info("Starting robot");
+        setupShutdownHooks();
         clearLCD();
         lcd.setFont(new Font(MONOSPACED, PLAIN, 10));
         lcd.setColor(Color.BLACK);
@@ -56,57 +56,52 @@ public class App extends EV3DevDevice {
         lcd.refresh();
         LOG.info("Hello Lego!");
         Button.waitForAnyPress();
-        LOG.info("Setup motors.");
-        leftMotor.setSpeed(-200);
-        rightMotor.setSpeed(-200);
         final RobotState robotState = new RobotState();
+        setupRobotControlListeners(robotState);
         final Behavior[] behaviors = { new DriveForwardBehavior(robotState, leftMotor, rightMotor),
-                new FindRedBehavior(colorSensor, leftMotor, rightMotor, robotState) };//,
-        //new BackOffBehavior(irSensor, leftMotor, rightMotor, robotState) };
+                new FindRedBehavior(colorSensor, leftMotor, rightMotor, robotState),
+                new BackOffBehavior(irSensor, leftMotor, rightMotor, robotState) };
         final Arbitrator arbitrator = new Arbitrator(behaviors);
-        LOG.info("Launching control thread");
-        final Thread killThread = new Thread(() -> {
-            Button.ESCAPE.addKeyListener(new KeyListener() {
-                @Override
-                public void keyPressed(final Key key) {
-                    LOG.info("Stopping program");
-                    System.exit(1);
-                }
-
-                @Override
-                public void keyReleased(final Key key) {
-
-                }
-            });
-            Button.ENTER.addKeyListener(new KeyListener() {
-                @Override
-                public void keyPressed(final Key key) {
-                    final boolean pause = robotState.getPause().get();
-                    LOG.info("Setting robot pause = {}", !pause);
-                    robotState.getPause().set(!pause);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (final InterruptedException e) {
-
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void keyReleased(final Key key) {
-
-                }
-            });
-
-        });
-        killThread.start();
         LOG.info("Launching behaviors");
         arbitrator.go();
-        LOG.warn("Arbitrator quit. No behaviours requiring action...");
+        LOG.warn("Arbitrator quit.");
         clearLCD();
-        lcd.refresh();
         LOG.info("Shutting down.");
 
+    }
+
+    public static void setupRobotControlListeners(final RobotState robotState) {
+        Button.ESCAPE.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(final Key key) {
+                LOG.info("Stopping program");
+                System.exit(1);
+            }
+
+            @Override
+            public void keyReleased(final Key key) {
+
+            }
+        });
+        Button.ENTER.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(final Key key) {
+                final boolean pause = robotState.getPause().get();
+                LOG.info("Setting robot pause = {}", !pause);
+                robotState.getPause().set(!pause);
+                try {
+                    Thread.sleep(1000);
+                } catch (final InterruptedException e) {
+
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void keyReleased(final Key key) {
+
+            }
+        });
     }
 
     public static void setupShutdownHooks() {
@@ -122,5 +117,6 @@ public class App extends EV3DevDevice {
     public static void clearLCD() {
         lcd.setColor(Color.WHITE);
         lcd.fillRect(0, 0, lcd.getWidth(), lcd.getHeight());
+        lcd.refresh();
     }
 }
