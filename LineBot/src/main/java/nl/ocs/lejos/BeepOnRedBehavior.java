@@ -11,19 +11,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BeepOnRedBehavior implements Behavior {
 
     private final EV3ColorSensor colorSensor;
-
-    private final RobotState robotState;
-
     private final AtomicBoolean suppressed = new AtomicBoolean(true);
     private final Sound sound;
-
     private final SampleProvider colorSampler;
-
     private final float[] sample;
+    private final AtomicBoolean paused;
 
-    public BeepOnRedBehavior(final EV3ColorSensor colorSensor, final Sound sound, final RobotState robotState) {
+    public BeepOnRedBehavior(final EV3ColorSensor colorSensor, final Sound sound, final AtomicBoolean paused) {
         this.colorSensor = colorSensor;
-        this.robotState = robotState;
+        this.paused = paused;
         this.sound = sound;
         colorSampler = colorSensor.getColorIDMode();
         sample = new float[colorSampler.sampleSize()];
@@ -32,7 +28,7 @@ public class BeepOnRedBehavior implements Behavior {
     @Override
     public boolean takeControl() {
         colorSampler.fetchSample(sample, 0);
-        return Color.RED == (int) sample[0] && !robotState.getPause().get();
+        return Color.RED == (int) sample[0] && !paused.get();
     }
 
     @Override

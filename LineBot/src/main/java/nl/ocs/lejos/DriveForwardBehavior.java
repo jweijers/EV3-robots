@@ -9,24 +9,23 @@ public class DriveForwardBehavior implements Behavior {
 
     private final AtomicBoolean suppressed = new AtomicBoolean(false);
     private final EV3LargeRegulatedMotor rightMotor;
-
     private final EV3LargeRegulatedMotor leftMotor;
-    private final RobotState robotState;
+    private final AtomicBoolean paused;
 
-    public DriveForwardBehavior(final RobotState robotState, final EV3LargeRegulatedMotor leftMotor,
+    public DriveForwardBehavior(final AtomicBoolean paused, final EV3LargeRegulatedMotor leftMotor,
             final EV3LargeRegulatedMotor rightMotor) {
+        this.paused = paused;
         this.rightMotor = rightMotor;
         this.leftMotor = leftMotor;
-        this.robotState = robotState;
     }
 
     private boolean driveOn() {
-        return !robotState.getPause().get() && !suppressed.get();
+        return !paused.get() && !suppressed.get();
     }
 
     @Override
     public boolean takeControl() {
-        return !(robotState.getPause().get());
+        return !(paused.get());
     }
 
     @Override

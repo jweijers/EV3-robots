@@ -17,19 +17,19 @@ public class FindRedBehavior implements Behavior {
     private static final int MAX_SPEED = 100;
 
     private final EV3ColorSensor colorSensor;
-    private final RobotState robotState;
     private final AtomicBoolean suppressed = new AtomicBoolean(true);
     private final SampleProvider colorSampler;
     private final float[] sample;
     private final EV3LargeRegulatedMotor leftMotor;
     private final EV3LargeRegulatedMotor rightMotor;
+    private final AtomicBoolean paused;
 
     public FindRedBehavior(final EV3ColorSensor colorSensor, final EV3LargeRegulatedMotor leftMotor,
-            final EV3LargeRegulatedMotor rightMotor, final RobotState robotState) {
+            final EV3LargeRegulatedMotor rightMotor, final AtomicBoolean paused) {
         this.colorSensor = colorSensor;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
-        this.robotState = robotState;
+        this.paused = paused;
         colorSampler = colorSensor.getColorIDMode();
         sample = new float[colorSampler.sampleSize()];
     }
@@ -42,7 +42,7 @@ public class FindRedBehavior implements Behavior {
 
     private boolean continueSearch() {
         colorSampler.fetchSample(sample, 0);
-        final boolean takeControl = Color.RED != (int) sample[0] && !robotState.getPause().get();
+        final boolean takeControl = Color.RED != (int) sample[0] && !paused.get();
         LOG.info("Continue search: {}", takeControl);
         return takeControl;
     }
@@ -52,7 +52,7 @@ public class FindRedBehavior implements Behavior {
         LOG.info("Starting find red behavior");
         suppressed.set(false);
         int rotation = 60;
-        while (!robotState.getPause().get() && takeControl() && !suppressed.get()) {
+        while (!paused.get() && takeControl() && !suppressed.get()) {
 
             leftMotor.setSpeed(MAX_SPEED);
             rightMotor.setSpeed(MAX_SPEED);

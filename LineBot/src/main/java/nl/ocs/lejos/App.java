@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Font;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.awt.Font.MONOSPACED;
 import static java.awt.Font.PLAIN;
@@ -56,11 +57,11 @@ public class App extends EV3DevDevice {
         lcd.refresh();
         LOG.info("Hello Lego!");
         Button.waitForAnyPress();
-        final RobotState robotState = new RobotState();
-        setupRobotControlListeners(robotState);
-        final Behavior[] behaviors = { new DriveForwardBehavior(robotState, leftMotor, rightMotor),
-                new FindRedBehavior(colorSensor, leftMotor, rightMotor, robotState),
-                new BackOffBehavior(irSensor, leftMotor, rightMotor, robotState) };
+        final AtomicBoolean paused = new AtomicBoolean(false);
+        setupRobotControlListeners(paused);
+        final Behavior[] behaviors = { new DriveForwardBehavior(paused, leftMotor, rightMotor),
+                new FindRedBehavior(colorSensor, leftMotor, rightMotor, paused),
+                new BackOffBehavior(irSensor, leftMotor, rightMotor, paused) };
         final Arbitrator arbitrator = new Arbitrator(behaviors);
         LOG.info("Launching behaviors");
         arbitrator.go();
@@ -70,7 +71,7 @@ public class App extends EV3DevDevice {
 
     }
 
-    public static void setupRobotControlListeners(final RobotState robotState) {
+    public static void setupRobotControlListeners(final AtomicBoolean paused) {
         Button.ESCAPE.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(final Key key) {
@@ -86,9 +87,9 @@ public class App extends EV3DevDevice {
         Button.ENTER.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(final Key key) {
-                final boolean pause = robotState.getPause().get();
+                final boolean pause = paused.get();
                 LOG.info("Setting robot pause = {}", !pause);
-                robotState.getPause().set(!pause);
+                paused.set(!pause);
                 try {
                     Thread.sleep(1000);
                 } catch (final InterruptedException e) {

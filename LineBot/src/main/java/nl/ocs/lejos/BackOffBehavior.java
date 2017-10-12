@@ -16,20 +16,22 @@ public class BackOffBehavior implements Behavior {
     private final static int MINIMAL_DISTANCE = 40;
 
     private final EV3IRSensor irSensor;
-    private final RobotState robotState;
+
     private final AtomicBoolean suppressed = new AtomicBoolean(true);
     private final SampleProvider distanceSampler;
     private final float[] sample;
     private final EV3LargeRegulatedMotor leftMotor;
     private final EV3LargeRegulatedMotor rightMotor;
+    private final AtomicBoolean paused;
 
     public BackOffBehavior(final EV3IRSensor irSensor, final EV3LargeRegulatedMotor leftMotor,
-            final EV3LargeRegulatedMotor rightMotor, final RobotState robotState) {
+            final EV3LargeRegulatedMotor rightMotor, final AtomicBoolean paused) {
         this.irSensor = irSensor;
         this.leftMotor = leftMotor;
         this.rightMotor = rightMotor;
-        this.robotState = robotState;
+
         distanceSampler = irSensor.getDistanceMode();
+        this.paused = paused;
         sample = new float[distanceSampler.sampleSize()];
     }
 
@@ -39,7 +41,7 @@ public class BackOffBehavior implements Behavior {
         distanceSampler.fetchSample(sample, 0);
         final int distance = (int) sample[0];
         LOG.debug("Distance is: {}", distance);
-        return distance < MINIMAL_DISTANCE && !robotState.getPause().get();
+        return distance < MINIMAL_DISTANCE && !paused.get();
     }
 
     @Override
